@@ -5,6 +5,7 @@ from itertools import count
 from sys import argv as args
 from subprocess import Popen, PIPE
 SHARE_DIR_PATH = "/home//.local/share/cptool"
+SNIPPETS_DIR_PATH = os.path.join(SHARE_DIR_PATH, "snippets")
 TEMPLATE_FILEPATH = os.path.join(SHARE_DIR_PATH, "template.cpp")
 PROG_FILENAME = "main.cpp"
 BIN_FILENAME = "main"
@@ -23,6 +24,18 @@ match args[1]:
             exit(1)
         os.mkdir(name)
         shutil.copy(TEMPLATE_FILEPATH, os.path.join(name, PROG_FILENAME))
+    case "load":
+        if len(args) <= 2:
+            print("Snippet required.")
+            exit(1)
+        snippet = args[2]
+        snippet_filepath = os.path.join(SNIPPETS_DIR_PATH, "{}.cpp".format(snippet))
+        if not os.path.isfile(snippet_filepath):
+            print("Invalid snippet.")
+            exit(1)
+        p = Popen(["xclip", "-sel", "clip", "-f"], stdin=PIPE, stdout=PIPE)
+        with open(snippet_filepath, "r") as f:
+            p.communicate(input=f.read().strip().encode())
     case "build":
         if os.system(BUILD_CMD):
             print("Compiler error.")
@@ -41,7 +54,7 @@ match args[1]:
                     inp_content = f.read()
                 with open(outp_filename) as f:
                     outp_lines = f.read().strip().split('\n')
-                p = Popen([ "./{}".format(BIN_FILENAME) ], stdin=PIPE, stdout=PIPE, stderr=PIPE)
+                p = Popen(["./{}".format(BIN_FILENAME)], stdin=PIPE, stdout=PIPE, stderr=PIPE)
                 actual_lines = p.communicate(input=inp_content)[0].decode().strip().split('\n')
                 if len(actual_lines) == len(outp_lines):
                     for i in range(len(actual_lines)):
