@@ -54,10 +54,9 @@ ll SegTree::point_query(ll target) {
 void SegTree::range_update(ll l, ll r, ll delta) {
     if(r < L || R < l || r < l)
         return;
-    else if(l <= L && R <= r) {
-        cached = L == R;
+    cached = L == R;
+    if(l <= L && R <= r)
         lazy += delta;
-    }
     else {
         for(ll i = 0; i < 2; i++)
             kids[i]->range_update(l, r, delta);
