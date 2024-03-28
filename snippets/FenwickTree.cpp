@@ -21,7 +21,7 @@ ll FenwickTree::range_query(ll l, ll r) {
     return query(r) - query(l - 1);
 }
 ll FenwickTree::point_query(ll target) {
-    return query(target) - query(target - 1);
+    return range_query(target, target);
 }
 void FenwickTree::point_update(ll target, ll delta) {
     for(ll i = target + 1; i < sz(T); i += i & -i)

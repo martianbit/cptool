@@ -1,7 +1,10 @@
 class SegTree {
-public:
-    ll L, R, cache;
+private:
+    ll L, R;
     array<SegTree*, 2> kids;
+    void recalc();
+public:
+    ll cache;
     SegTree(ll L, ll R);
     ~SegTree();
     ll range_query(ll l, ll r);
@@ -24,6 +27,9 @@ SegTree::~SegTree() {
     delete kids[0];
     delete kids[1];
 }
+void SegTree::recalc() {
+    cache = max(kids[0]->cache, kids[1]->cache);
+}
 ll SegTree::range_query(ll l, ll r) {
     if(r < L || R < l || r < l)
         return -INF;
@@ -39,8 +45,8 @@ void SegTree::point_update(ll target, ll delta) {
     if(L == R)
         cache += delta;
     else {
-        kids[target >= kids[1]->L]->point_update(target, delta);
-        cache = max(kids[0]->cache, kids[1]->cache);
+        kids[target > ((L + R) >> 1)]->point_update(target, delta);
+        recalc();
     }
 }
 
