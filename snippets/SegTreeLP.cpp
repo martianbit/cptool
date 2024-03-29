@@ -1,7 +1,3 @@
-typedef struct {
-    bool pending_set;
-    ll delta, value;
-} Lazy;
 class SegTreeLP {
 private:
     ll L, R;
@@ -11,7 +7,10 @@ private:
     void handle_lazy();
 public:
     ll cache;
-    Lazy lazy;
+    struct {
+        bool pending_set;
+        ll delta, value;
+    } lazy;
     SegTreeLP(ll L, ll R);
     ~SegTreeLP();
     ll range_query(ll l, ll r);
@@ -59,7 +58,7 @@ void SegTreeLP::handle_lazy() {
     reset_lazy();
 }
 ll SegTreeLP::range_query(ll l, ll r) {
-    if(r < L || R < l || r < l)
+    if(r < L || R < l)
         return 0;
     handle_lazy();
     if(l <= L && R <= r)
@@ -71,7 +70,7 @@ ll SegTreeLP::point_query(ll target) {
     return range_query(target, target);
 }
 void SegTreeLP::range_update(ll l, ll r, ll delta) {
-    if(r < L || R < l || r < l) {
+    if(r < L || R < l) {
         handle_lazy();
         return;
     }
@@ -90,7 +89,7 @@ void SegTreeLP::point_update(ll target, ll delta) {
     range_update(target, target, delta);
 }
 void SegTreeLP::range_set(ll l, ll r, ll value) {
-    if(r < L || R < l || r < l) {
+    if(r < L || R < l) {
         handle_lazy();
         return;
     }
