@@ -1,3 +1,13 @@
+void hash_str(const string &s, vector<ll> &result) {
+    result.clear();
+    result.resize(sz(s));
+    result[0] = s[0];
+    ll p = 1;
+    for(ll i = 1; i < sz(s); i++) {
+        p = (p * HASHP) % MOD;
+        result[i] = (((s[i] * p) % MOD) + result[i - 1]) % MOD;
+    }
+}
 void compute_lps(const string &s, vector<ll> &lps) {
     lps.clear();
     lps.resize(sz(s));

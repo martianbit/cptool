@@ -6,9 +6,6 @@ void pre_fact(ll n) {
     for(ll i = 1; i <= n; i++)
         fact[i] = (i * fact[i - 1]) % MOD;
 }
-ll inv(ll a) {
-    return binpow(a, MOD - 2);
-}
 ll nCr(ll n, ll k) {
     return (fact[n] * inv(fact[k] * fact[n - k])) % MOD;
 }
