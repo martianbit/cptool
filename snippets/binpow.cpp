@@ -1,9 +1,11 @@
 ll binpow(ll a, ll b) {
+    a %= MOD;
     ll r = 1;
-    for(ll i = 62; i >= 0; i--) {
-        r = (r * r) % MOD;
-        if(b & (1LL << i))
+    while(b) {
+        if(b & 1)
             r = (r * a) % MOD;
+        b >>= 1;
+        a = (a * a) % MOD;
     }
     return r;
 }
