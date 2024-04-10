@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#define xx first
+#define yy second
 #define sz(x) ((ll) (x).size())
 #define all(x) (x).begin(), (x).end()
 #define mod(a, b) ((((a) % (b)) + (b)) % (b))
