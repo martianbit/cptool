@@ -65,4 +65,65 @@ void KMP(const string &s, const string &p, vector<ll> &result) {
             i++;
     }
 }
+void aho_corasick(const string &s, const vector<string> &p, vector<ll> &result) {
+    result.clear();
+    result.assign(sz(p), 0);
+    typedef struct {
+        ll cnt, fail;
+        vector<ll> dict;
+        array<ll, 26> edges;
+    } TrieVertex;
+    vector<TrieVertex> trie;
+    trie.emplace_back();
+    trie.push_back({ .fail = 1 });
+    for(ll i = 0; i < sz(p); i++) {
+        ll v = 1;
+        for(const auto &x : p[i]) {
+            if(!trie[v].edges[x - 'a']) {
+                trie[v].edges[x - 'a'] = sz(trie);
+                trie.emplace_back();
+            }
+            v = trie[v].edges[x - 'a'];
+        }
+        trie[v].dict.push_back(i);
+    }
+    queue<ll> q;
+    for(ll i = 0; i < 26; i++) {
+        if(trie[1].edges[i]) {
+            trie[trie[1].edges[i]].fail = 1;
+            q.push(trie[1].edges[i]);
+        }
+        else
+            trie[1].edges[i] = 1;
+    }
+    while(!q.empty()) {
+        auto v = q.front();
+        q.pop();
+        for(ll i = 0; i < 26; i++) {
+            if(trie[v].edges[i]) {
+                trie[trie[v].edges[i]].fail = trie[trie[v].fail].edges[i];
+                q.push(trie[v].edges[i]);
+            }
+            else
+                trie[v].edges[i] = trie[trie[v].fail].edges[i];
+        }
+    }
+    vector<vector<ll>> AL(sz(trie));
+    for(ll i = 2; i < sz(trie); i++)
+        AL[trie[i].fail].push_back(i);
+    ll state = 1;
+    for(const auto &x : s) {
+        state = trie[state].edges[x - 'a'];
+        trie[state].cnt++;
+    }
+    function<void(ll)> dfs = [&](ll v) -> void {
+        for(const auto &x : AL[v]) {
+            dfs(x);
+            trie[v].cnt += trie[x].cnt;
+        }
+        for(const auto &x : trie[v].dict)
+            result[x] = trie[v].cnt;
+    };
+    dfs(1);
+}
 
