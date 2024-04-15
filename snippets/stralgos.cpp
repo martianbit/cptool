@@ -126,4 +126,40 @@ void aho_corasick(const string &s, const vector<string> &p, vector<ll> &result) 
     };
     dfs(1);
 }
+typedef struct {
+    ll len, link;
+    array<ll, 26> edges;
+} SAVertex;
+void build_sa(const string &s, vector<SAVertex> &sa) {
+    sa.clear();
+    sa.emplace_back();
+    sa.emplace_back();
+    ll lst = 1;
+    for(const auto &x : s) {
+        ll curr = sz(sa);
+        sa.push_back({ .len = sa[lst].len + 1 });
+        ll p = lst;
+        while(p && !sa[p].edges[x - 'a']) {
+            sa[p].edges[x - 'a'] = curr;
+            p = sa[p].link;
+        }
+        if(p) {
+            ll q = sa[p].edges[x - 'a'];
+            if(sa[q].len == sa[p].len + 1)
+                sa[curr].link = q;
+            else {
+                ll clone = sz(sa);
+                sa.push_back({ .len = sa[p].len + 1, .link = sa[q].link, .edges = sa[q].edges });
+                sa[curr].link = sa[q].link = clone;
+                while(p && sa[p].edges[x - 'a'] == q) {
+                    sa[p].edges[x - 'a'] = clone;
+                    p = sa[p].link;
+                }
+            }
+        }
+        else
+            sa[curr].link = 1;
+        lst = curr;
+    }
+}
 
