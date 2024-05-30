@@ -5,7 +5,7 @@ public:
     DSU(ll N);
     void make_set(ll v);
     ll find_set(ll v);
-    void union_sets(ll a, ll b);
+    void unite_sets(ll a, ll b);
 };
 DSU::DSU(ll N) {
     P.resize(N);
@@ -20,7 +20,7 @@ ll DSU::find_set(ll v) {
         P[v] = find_set(P[v]);
     return P[v];
 }
-void DSU::union_sets(ll a, ll b) {
+void DSU::unite_sets(ll a, ll b) {
     a = find_set(a);
     b = find_set(b);
     if(a == b)
