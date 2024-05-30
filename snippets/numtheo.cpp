@@ -1,4 +1,5 @@
 void find_divisors(ll n, vector<ll> &divs) {
+    divs.clear();
     ll i;
     for(i = 1; i * i < n; i++) {
         if(n % i)
